@@ -1,6 +1,8 @@
 class HashTable {
     constructor() {
-        this.table = [];
+        this.size = 10;
+        this.table = new Array(this.size);
+        this.count = 0;
     }
 
 
@@ -13,7 +15,7 @@ class HashTable {
             hash = (hash << 5) - hash + char;
         }
 
-        return hash;
+        return Math.abs(hash) % this.size;
 
     }
 
@@ -24,7 +26,20 @@ class HashTable {
         if (this.table[hash] === undefined) {
             this.table[hash] = [];
         }
-        return this.table[hash].push([key, value]);
+
+        for (let i = 0; i < this.table[hash].length; i++) {
+            if (this.table[hash][i][0] === key) {
+                this.table[hash][i][1] = value;
+                return;
+            }
+        }
+
+        if (this.count / this.size > 0.7) {
+            this.resize(this.size * 2);
+        }
+
+        this.table[hash].push([key, value]);
+        this.count++;
     }
 
 
@@ -63,6 +78,21 @@ class HashTable {
 
     }
 
+    resize(newSize) {
+        const oldTable = this.table;
+        this.size = newSize;
+        this.count = 0;
+        this.table = new Array(newSize);
+
+        for (const data of oldTable) {
+            if (data) {
+                for (const [key, value] of data) {
+                    this.insert(key, value);
+                }
+            }
+        }
+    }
+
 }
 
 const hashTable = new HashTable();
@@ -73,12 +103,20 @@ console.log(hashTable)
 
 //insert values
 hashTable.insert("Bruno", 22);
+hashTable.insert("Bruno", 22);
 hashTable.insert("Inga", 21);
 hashTable.insert("Bella", 33);
 
 // insert values and checking collision 
 hashTable.insert("Alex", 25);
 hashTable.insert("Xela", 30);
+hashTable.insert("Belwa", 88);
+hashTable.insert("Belooa", 99);
+hashTable.insert("Besla", 31);
+hashTable.insert("kengui", 32);
+hashTable.insert("Bzella", 33);
+hashTable.insert("Bellca", 33);
+
 
 
 
