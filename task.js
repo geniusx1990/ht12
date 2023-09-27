@@ -70,12 +70,17 @@ class HashTable {
             for (let i = 0; i < this.table[hash].length; i++) {
                 if (this.table[hash][i][0] === key) {
                     this.table[hash].splice(i, 1);
+                    this.count--;
+
+                    if (this.count / this.size < 0.2) {
+                        this.resize(Math.floor(this.size / 2));
+                    }
+
                     return true;
                 }
             }
         }
-        return false
-
+        return false;
     }
 
     resize(newSize) {
